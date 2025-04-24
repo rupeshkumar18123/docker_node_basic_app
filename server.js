@@ -3,7 +3,9 @@ const mongoose = require('mongoose');
 const path = require('path');
 // Initialize app and middleware
 const app = express();
-app.use(express.json()); // Use built-in JSON parser
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 
 require("./db.js");
 const User = require("./User.js");
@@ -15,17 +17,17 @@ app.get('/', (req, res) => {
 });
 // Routes
 app.post('/register', async (req, res) => {
-    const { username, password, email } = req.body;
+    const { name, password, email } = req.body;
     try {
-        if (!username || !password || !email) {
+        if (!name || !password || !email) {
             return res.status(400).send('Username and password are required');
         }
         // Check if the user already exists
-        const existingUser = await User.findOne({ username });
+        const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).send('User already exists');
         }
-        const newUser = new User({ username, email, password });
+        const newUser = new User({ name, email, password });
 
         await newUser.save();
         res.status(201).send('User registered successfully');
@@ -35,13 +37,13 @@ app.post('/register', async (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
     try {
-        if (!username || !password) {
+        if (!email || !password) {
             return res.status(400).send('Username and password are required');
         }
 
-        const user = await User.findOne({ username });
+        const user = await User.findOne({ email });
         if (user && user.password === password) {
             res.status(200).send('Login successful');
         } else {
