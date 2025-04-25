@@ -99,4 +99,4 @@ You can use this Mongo setup with a Node.js web app for registration and login f
 - MongoDB as backend database (running via Docker)  
 - Connects via `mongodb://admin:qwerty@mongo:27017` inside Docker Compose or using network aliasing
 
----
+-----------------
